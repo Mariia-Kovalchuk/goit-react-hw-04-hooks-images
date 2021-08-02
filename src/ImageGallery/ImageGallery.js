@@ -101,7 +101,7 @@ function ImageGallery() {
                                 ))}
                             </ul>
 
-                            {total > (page - 1) * 12 && (<Button onClick={onLoadMore} />)}
+                            {total > (page * 12) && (<Button onClick={onLoadMore} />)}
                
                             {showModal && <Modal onClose={toggleModal} url={modalImgUrl} />}
 
