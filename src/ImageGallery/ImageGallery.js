@@ -40,24 +40,23 @@ function ImageGallery() {
                     setSearchQueryResult(prevState => [...prevState, ...searchQueryResult.hits]);
                     setStatus(Status.RESOLVED);
                     setTotal(searchQueryResult.total);
+                    if (page > 1) {
+                        scrollPage();
+                    };
                 })
                 .catch(error => {
                     setError(error);
                     setStatus(Status.REJECTED);
                 })
-                .finally(() => window.scrollTo({
-                    top: document.documentElement.scrollHeight,
-                    behavior: "smooth",
-                }));
             
         };
 
-        fetchSearchQuery();
         setStatus(Status.PENDING);
+        fetchSearchQuery();
+     
 
-    }, [searchQuery,page]);    
-
-
+    }, [searchQuery, page]);
+    
 
     const handleFormSubmit = searchQuery => {
         setSearchQuery(searchQuery);
@@ -81,19 +80,29 @@ function ImageGallery() {
         };
           
     };
-    
-      const onLoadMore = () => {
-          setPage((prevState) => prevState + 1);
-  };
+
+    const onLoadMore = () => {
+        setPage((prevState) => prevState + 1);
+    };
+
+
+    const scrollPage = () => {
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: "smooth",
+        });
+    };
+
+
     
     return (
             <div >
                 < Searchbar onSubmit={handleFormSubmit} />
 
-                {status === 'pending' && <Loader className={styles.Loader} type="Circles" color="#3f51b5" height={100} width={100} timeout={5000} />}
+                {status === 'pending' && !searchQueryResult.length && <Loader className={styles.Loader} type="Circles" color="#3f51b5" height={100} width={100} timeout={5000} />}
 
                 <div >
-                    {status === 'resolved' && searchQueryResult.length > 0 &&
+                    { searchQueryResult.length > 0 &&
                         <div >
                             <ul className={styles.ImageGallery}>
                                 {searchQueryResult.map(img => (
